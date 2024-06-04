@@ -1,17 +1,17 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package view;
 
 /**
  *
- * @author Felipe
+ * @author joaov
  */
-public class Vendas extends javax.swing.JPanel {
+public class Vendas extends javax.swing.JFrame {
 
     /**
-     * Creates new form Vendas
+     * Creates new form NewJFramed
      */
     public Vendas() {
         initComponents();
@@ -47,6 +47,8 @@ public class Vendas extends javax.swing.JPanel {
         taObservacoes = new javax.swing.JTextArea();
         btSalvarPedido = new javax.swing.JButton();
 
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
         cbCliente.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cbCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -68,6 +70,12 @@ public class Vendas extends javax.swing.JPanel {
         tfQuantidadeItem.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 tfQuantidadeItemKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tfQuantidadeItemKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                tfQuantidadeItemKeyTyped(evt);
             }
         });
 
@@ -136,7 +144,7 @@ public class Vendas extends javax.swing.JPanel {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(tfValorItem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(tfValorItem))
                                 .addGap(18, 18, 18)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -144,7 +152,7 @@ public class Vendas extends javax.swing.JPanel {
                                 .addGap(18, 18, 18)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(tfValorTotalItem)
-                                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)))
+                                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
                                 .addComponent(btAdicionarItens))
@@ -217,8 +225,8 @@ public class Vendas extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
@@ -231,8 +239,10 @@ public class Vendas extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void cbClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbClienteActionPerformed
@@ -243,29 +253,34 @@ public class Vendas extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_cbProdutoActionPerformed
 
+    private void tfQuantidadeItemKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfQuantidadeItemKeyPressed
+
+    }//GEN-LAST:event_tfQuantidadeItemKeyPressed
+
     private void tfValorItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfValorItemActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_tfValorItemActionPerformed
-
-    private void btSalvarPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSalvarPedidoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btSalvarPedidoActionPerformed
 
     private void btAdicionarItensActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAdicionarItensActionPerformed
 
     }//GEN-LAST:event_btAdicionarItensActionPerformed
 
-    private void tfQuantidadeItemKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfQuantidadeItemKeyPressed
-                
+    private void btSalvarPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSalvarPedidoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btSalvarPedidoActionPerformed
+
+    private void tfQuantidadeItemKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfQuantidadeItemKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tfQuantidadeItemKeyTyped
+
+    private void tfQuantidadeItemKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfQuantidadeItemKeyReleased
         Double quantidadeItem = Double.parseDouble(tfQuantidadeItem.getText());
         Double valorItem = Double.parseDouble(tfValorItem.getText());
-        
-        Double valorTotalItem = valorItem * quantidadeItem;
-        
-        tfValorTotalItem.setText(String.valueOf(valorTotalItem));
-        
-    }//GEN-LAST:event_tfQuantidadeItemKeyPressed
 
+        Double valorTotalItem = valorItem * quantidadeItem;
+
+        tfValorTotalItem.setText(String.valueOf(valorTotalItem));
+    }//GEN-LAST:event_tfQuantidadeItemKeyReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btAdicionarItens;
