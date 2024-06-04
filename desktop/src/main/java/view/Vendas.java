@@ -4,19 +4,35 @@
  */
 package view;
 
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author joaov
  */
 public class Vendas extends javax.swing.JFrame {
+          
+          private DefaultTableModel  modelo = new DefaultTableModel();
+          private int linhaSelecionada = -1;
 
     /**
      * Creates new form NewJFramed
      */
     public Vendas() {
         initComponents();
+        carregaTabela();
     }
-
+    
+    public void carregaTabela(){
+        
+       modelo.addColumn("Item");
+       modelo.addColumn("Valor");
+       tbPedido.setModel(modelo);
+       tbPedido.getColumnModel().getColumn(0).setPreferredWidth(0);
+       tbPedido.getColumnModel().getColumn(1).setPreferredWidth(0);
+    
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -262,11 +278,38 @@ public class Vendas extends javax.swing.JFrame {
     }//GEN-LAST:event_tfValorItemActionPerformed
 
     private void btAdicionarItensActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAdicionarItensActionPerformed
+                    
+          Double quantidadeItens = Double.parseDouble(tfQuantidadeItem.getText());
+          Double valorItem = Double.parseDouble(tfValorItem.getText());
+          Double valorTotalItens = Double.parseDouble(tfValorTotalItem.getText());
 
+          valorTotalItens = (Double.valueOf(quantidadeItens) * Double.valueOf(valorItem)) + valorTotalItens;
+
+          if( linhaSelecionada >= 0 ){
+              modelo.removeRow(linhaSelecionada);
+              modelo.insertRow(linhaSelecionada, new Object[] {cbProduto, valorTotalItens});
+          }else{
+              modelo.addRow(new Object[] {cbProduto, valorTotalItens});
+          }
+
+          JOptionPane.showMessageDialog(jPanel1, "Item adicionado com Sucesso!");
+
+          tfQuantidadeItem.setText("");
+          tfValorItem.setText("");
+          tfValorTotalItem.setText("");
+
+          linhaSelecionada = -1;
+
+          tfValorTotalPedido.setText("R$ " + String.valueOf(valorTotalItens + valorTotalItens));
+    
     }//GEN-LAST:event_btAdicionarItensActionPerformed
 
     private void btSalvarPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSalvarPedidoActionPerformed
-        // TODO add your handling code here:
+           
+           String observacoes = taObservacoes.getText();
+           String cliente = cbCliente.getName();
+           String item = cbProduto.getName();
+           Double valorTotal = Double.parseDouble(tfValorTotalPedido.getText());
     }//GEN-LAST:event_btSalvarPedidoActionPerformed
 
     private void tfQuantidadeItemKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfQuantidadeItemKeyTyped
