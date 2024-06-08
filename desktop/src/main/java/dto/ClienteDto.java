@@ -1,5 +1,7 @@
 package dto;
 
+import java.util.List;
+
 /**
  *
  * @author Felipe
@@ -10,7 +12,7 @@ public class ClienteDto {
     private String nome;
     private String telefone;
     private String email;
-
+    
     public Integer getId() {return id;}
 
     public void setId(Integer id) {this.id = id;}

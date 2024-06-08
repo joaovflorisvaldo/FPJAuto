@@ -4,8 +4,17 @@
  */
 package view;
 
+import Service.ServiceCliente;
+import Service.ServiceProduto;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import dto.ClienteDto;
+import dto.ProdutoDto;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import modelo.Produto;
 
 /**
  *
@@ -22,6 +31,8 @@ public class Vendas extends javax.swing.JFrame {
     public Vendas() {
         initComponents();
         carregaTabela();
+        carregarNomesDosClientes();
+        carregarProdutos();
     }
     
     public void carregaTabela(){
@@ -33,6 +44,41 @@ public class Vendas extends javax.swing.JFrame {
        tbPedido.getColumnModel().getColumn(1).setPreferredWidth(0);
     
     }
+    
+    // Metodo para carregar os nomes dos clientes da API
+    private void carregarNomesDosClientes() {
+        try {
+            List<ClienteDto> clientes = (List<ClienteDto>) ServiceCliente.obterClientesDaAPI();
+            // Limpa os itens existentes
+            cbCliente.removeAllItems();
+            // Adiciona os nomes dos clientes na lista
+            cbCliente.addItem("Selecione um Cliente");
+            
+            for (ClienteDto cliente : clientes) {
+                cbCliente.addItem(cliente.getNome());
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao carregar os nomes dos clientes: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    // Metodo para carregar os nomes dos produtos da API
+    private void carregarProdutos() {
+        try {
+            List<ProdutoDto> produtos = (List<ProdutoDto>) ServiceProduto.obterProdutosDaAPI();
+            // Limpa os itens existentes
+            cbProduto.removeAllItems();
+            // Adiciona os nomes dos clientes na lista
+            cbProduto.addItem("Selecione um Produto");
+            
+            for (ProdutoDto produto : produtos) {
+                cbProduto.addItem(produto.getDescricao());
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao carregar os nomes dos produtos: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -262,11 +308,25 @@ public class Vendas extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void cbClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbClienteActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_cbClienteActionPerformed
 
     private void cbProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbProdutoActionPerformed
-        // TODO add your handling code here:
+        try {
+            String produtoSelecionado = (String) cbProduto.getSelectedItem();
+            List<ProdutoDto> produtos = ServiceProduto.obterProdutosDaAPI();
+            // Busca o produto na lista pela descricao
+            for (ProdutoDto produto : produtos) {
+                if (produto.getDescricao().equals(produtoSelecionado)) {
+                    tfValorItem.setText(String.valueOf(produto.getValor()));
+                    return;
+                }
+            }
+            // Se o produto não for encontrado na lista, exibe uma mensagem de erro
+            JOptionPane.showMessageDialog(this, "Produto não encontrado na lista.", "Erro", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao obter valor do produto: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_cbProdutoActionPerformed
 
     private void tfQuantidadeItemKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfQuantidadeItemKeyPressed
@@ -287,7 +347,7 @@ public class Vendas extends javax.swing.JFrame {
 
           if( linhaSelecionada >= 0 ){
               modelo.removeRow(linhaSelecionada);
-              modelo.insertRow(linhaSelecionada, new Object[] {cbProduto, valorTotalItens});
+              modelo.insertRow(linhaSelecionada, new Object[] {cbProduto.getSelectedItem(), valorTotalItens});
           }else{
               modelo.addRow(new Object[] {cbProduto, valorTotalItens});
           }

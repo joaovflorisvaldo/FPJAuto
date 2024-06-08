@@ -1,11 +1,10 @@
-dto\ClienteDto.class
-view\Vendas$6.class
 com\mycompany\desktop\Util.class
 view\Vendas$2.class
 view\Vendas$4.class
-Service\serviceWeb.class
-com\mycompany\desktop\Desktop.class
-view\Vendas$5.class
 view\Vendas.class
-view\Vendas$1.class
 view\Vendas$3.class
+dto\ClienteDto.class
+view\Vendas$6.class
+Service\serviceWeb.class
+view\Vendas$5.class
+view\Vendas$1.class

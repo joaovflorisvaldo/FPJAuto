@@ -5,7 +5,6 @@
 package com.mycompany.desktop;
 
 import view.Vendas;
-
 /**
  *
  * @author Felipe
