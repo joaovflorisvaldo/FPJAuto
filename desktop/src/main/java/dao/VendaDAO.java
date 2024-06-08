@@ -7,6 +7,10 @@ package dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import modelo.Venda;
@@ -14,6 +18,7 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.view.JasperViewer;
+
 /**
  *
  * @author Felipe
@@ -27,9 +32,9 @@ public class VendaDAO extends GenericDAO<Venda>{
         venda = new Venda();
             venda.setId(rs.getInt("ID_VENDA"));
             venda.setObservacoes(rs.getString("OBSERVACOES"));
-            venda.setData(rs.getString("DATA"));
+            venda.setData(rs.getDate("DATA"));
             venda.setTotal(rs.getDouble("TOTAL"));            
-            venda.setCliente(rs.getString("CLIENTE"));
+            venda.setCliente(rs.getInt("CLIENTE"));
         } catch (SQLException ex) {
             Logger.getLogger(VendaDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -38,22 +43,29 @@ public class VendaDAO extends GenericDAO<Venda>{
 
    @Override
     public boolean salvar(Venda obj) {
-        String sql = "INSERT INTO public.\"Venda\"(\"ID_VENDA\", \"OBSERVACOES\", \"DATA\", \"TOTAL\", \"CLIENTE\")VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO public.\"Venda\"(\"OBSERVACOES\", \"DATA\", \"TOTAL\", \"CLIENTE\")VALUES (?, ?, ?, ?)";
         PreparedStatement ps = null;
         
         try {
-            ps = conn.prepareStatement(sql);
-            ps.setInt(1, obj.getId());
-            ps.setString(2, obj.getObservacoes());
-            ps.setString(3, obj.getData());
-            ps.setDouble(4,obj.getTotal());
-            ps.setString(5,obj.getCliente());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
+            LocalDate dataAtual = LocalDate.now();
+            String dataFormatada = dataAtual.format(formatter);
+        } catch (Exception e){
+        }
+
+        try {
+            ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, obj.getObservacoes());
+            ps.setDate(2,obj.getData());
+            ps.setDouble(3,obj.getTotal());
+            ps.setInt(4,obj.getCliente());
             ps.executeUpdate();
             ps.close();
             
             return true;
         } catch (SQLException ex) {
-            Logger.getLogger(VendaDAO.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("deu erro"+ ex);
+//            Logger.getLogger(VendaDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
     }

@@ -4,21 +4,17 @@
  */
 package modelo;
 
-import java.sql.Date;
-
 /**
  *
  * @author Felipe
  */
-public class Venda {
+public class ItemVenda {
     
     private Integer id;
     private String observacoes;
-    private Date data ;
+    private String data ;
     private Double total;
-    private Integer cliente;
-    
-    public Venda(){}
+    private String cliente;
 
     public Integer getId() {return id;}
 
@@ -28,17 +24,18 @@ public class Venda {
 
     public void setObservacoes(String observacoes) {this.observacoes = observacoes;}
 
-    public Date getData() {return data;}
+    public String getData() {return data;}
 
-    public void setData(Date data) {this.data = data;}
+    public void setData(String data) {this.data = data;}
 
     public Double getTotal() {return total;}
 
     public void setTotal(Double total) {this.total = total;}
 
-    public Integer getCliente() {return cliente;}
+    public String getCliente() {return cliente;}
 
-    public void setCliente(Integer cliente) {this.cliente = cliente;}
+    public void setCliente(String cliente) {this.cliente = cliente;}
+    
     
     
 }

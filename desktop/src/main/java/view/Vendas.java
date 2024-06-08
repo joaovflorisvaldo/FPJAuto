@@ -6,15 +6,21 @@ package view;
 
 import Service.ServiceCliente;
 import Service.ServiceProduto;
+import dao.VendaDAO;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import dto.ClienteDto;
 import dto.ProdutoDto;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import modelo.Cliente;
+import modelo.ItemVenda;
 import modelo.Produto;
+import modelo.Venda;
 
 /**
  *
@@ -22,6 +28,7 @@ import modelo.Produto;
  */
 public class Vendas extends javax.swing.JFrame {
           
+          private VendaDAO vendaDao = new VendaDAO();
           private DefaultTableModel  modelo = new DefaultTableModel();
           private int linhaSelecionada = -1;
 
@@ -174,7 +181,7 @@ public class Vendas extends javax.swing.JFrame {
 
         jLabel7.setText("Observações");
 
-        btAdicionarItens.setText("Adicionar");
+        btAdicionarItens.setText("Adicionar Item");
         btAdicionarItens.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btAdicionarItensActionPerformed(evt);
@@ -216,13 +223,13 @@ public class Vendas extends javax.swing.JFrame {
                                     .addComponent(tfValorTotalItem)
                                     .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(btAdicionarItens))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 0, Short.MAX_VALUE)))
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(btAdicionarItens)))
                         .addGap(18, 18, 18)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -245,7 +252,7 @@ public class Vendas extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -269,7 +276,7 @@ public class Vendas extends javax.swing.JFrame {
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(tfValorItem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(tfQuantidadeItem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btAdicionarItens)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -342,14 +349,14 @@ public class Vendas extends javax.swing.JFrame {
           Double quantidadeItens = Double.parseDouble(tfQuantidadeItem.getText());
           Double valorItem = Double.parseDouble(tfValorItem.getText());
           Double valorTotalItens = Double.parseDouble(tfValorTotalItem.getText());
-
-          valorTotalItens = (Double.valueOf(quantidadeItens) * Double.valueOf(valorItem)) + valorTotalItens;
+          
+          valorTotalItens = (Double.valueOf(quantidadeItens) * Double.valueOf(valorItem));
 
           if( linhaSelecionada >= 0 ){
               modelo.removeRow(linhaSelecionada);
-              modelo.insertRow(linhaSelecionada, new Object[] {cbProduto.getSelectedItem(), valorTotalItens});
+              modelo.insertRow(linhaSelecionada, new Object[] {cbProduto.getSelectedItem().toString(), valorTotalItens});
           }else{
-              modelo.addRow(new Object[] {cbProduto, valorTotalItens});
+              modelo.addRow(new Object[] {cbProduto.getSelectedItem().toString(), valorTotalItens});
           }
 
           JOptionPane.showMessageDialog(jPanel1, "Item adicionado com Sucesso!");
@@ -359,17 +366,48 @@ public class Vendas extends javax.swing.JFrame {
           tfValorTotalItem.setText("");
 
           linhaSelecionada = -1;
+          
+          Double valorTotalPedido = 0.0;
+            for (int i = 0; i < modelo.getRowCount(); i++) {
+                valorTotalPedido += Double.parseDouble(modelo.getValueAt(i, 1).toString());
+            }
 
-          tfValorTotalPedido.setText("R$ " + String.valueOf(valorTotalItens + valorTotalItens));
+          tfValorTotalPedido.setText(String.valueOf(valorTotalPedido));
     
     }//GEN-LAST:event_btAdicionarItensActionPerformed
 
     private void btSalvarPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSalvarPedidoActionPerformed
-           
-           String observacoes = taObservacoes.getText();
-           String cliente = cbCliente.getName();
-           String item = cbProduto.getName();
-           Double valorTotal = Double.parseDouble(tfValorTotalPedido.getText());
+            
+            Integer idCliente = 0;
+        
+            try {
+            String clienteSelecionado = (String) cbCliente.getSelectedItem();
+            List<ClienteDto> clientes = ServiceCliente.obterClientesDaAPI();
+
+            for (ClienteDto cliente : clientes) {
+                if (cliente.getNome().equals(clienteSelecionado)) {
+                    idCliente = cliente.getId();
+                    System.out.println(""+idCliente);
+                }
+            }
+
+            // Se o produto não for encontrado na lista, exibe uma mensagem de erro
+            JOptionPane.showMessageDialog(this, "Cliente não encontrado na lista.", "Erro", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Erro ao obter Cliente: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            }
+                    System.out.println("aa "+idCliente);
+
+           Venda venda = new Venda();
+           venda.setObservacoes(taObservacoes.getText());
+           venda.setTotal(Double.parseDouble(tfValorTotalPedido.getText()));
+           venda.setCliente(idCliente);
+
+           if(vendaDao.salvar(venda)){
+                JOptionPane.showMessageDialog(this, "Venda salva com sucesso!", "Sucesso",JOptionPane.PLAIN_MESSAGE);
+            }else{
+                JOptionPane.showMessageDialog(this, "Erro ao salvar Venda, solicite suporte!", "Erro",JOptionPane.PLAIN_MESSAGE);
+            }
     }//GEN-LAST:event_btSalvarPedidoActionPerformed
 
     private void tfQuantidadeItemKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfQuantidadeItemKeyTyped
