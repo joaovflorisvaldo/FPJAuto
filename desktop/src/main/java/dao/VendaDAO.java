@@ -8,11 +8,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import modelo.ItemVenda;
 import modelo.Venda;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -29,46 +27,76 @@ public class VendaDAO extends GenericDAO<Venda>{
     protected Venda construirObjeto(ResultSet rs) {
         Venda venda = null;
         try {
-        venda = new Venda();
-            venda.setId(rs.getInt("ID_VENDA"));
-            venda.setObservacoes(rs.getString("OBSERVACOES"));
-            venda.setData(rs.getDate("DATA"));
-            venda.setTotal(rs.getDouble("TOTAL"));            
-            venda.setCliente(rs.getInt("CLIENTE"));
+            if (rs.next()) {
+                venda = new Venda();
+                venda.setId(rs.getInt("id"));
+                venda.setObservacoes(rs.getString("observacoes"));
+                venda.setTotal(rs.getDouble("total"));
+                venda.setCliente(rs.getInt("cliente_id"));
+            }
         } catch (SQLException ex) {
             Logger.getLogger(VendaDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return venda;
     }
 
-   @Override
-    public boolean salvar(Venda obj) {
-        String sql = "INSERT INTO public.\"Venda\"(\"OBSERVACOES\", \"DATA\", \"TOTAL\", \"CLIENTE\")VALUES (?, ?, ?, ?)";
-        PreparedStatement ps = null;
-        
-        try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
-            LocalDate dataAtual = LocalDate.now();
-            String dataFormatada = dataAtual.format(formatter);
-        } catch (Exception e){
-        }
+@Override
+public boolean salvar(Venda obj) {
+    String vendaSql = "INSERT INTO public.\"venda\"(\"data\", \"descricao\", \"total\", \"cliente_id\") VALUES (?, ?, ?, ?)";
+    String itemSql = "INSERT INTO public.\"item_venda\"(\"quantidade\", \"valor_total\", \"valor_unitario\", \"produto_id\", \"venda_id\") VALUES (?, ?, ?, ?, ?)";
 
-        try {
-            ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, obj.getObservacoes());
-            ps.setDate(2,obj.getData());
-            ps.setDouble(3,obj.getTotal());
-            ps.setInt(4,obj.getCliente());
-            ps.executeUpdate();
-            ps.close();
-            
-            return true;
-        } catch (SQLException ex) {
-            System.out.println("deu erro"+ ex);
-//            Logger.getLogger(VendaDAO.class.getName()).log(Level.SEVERE, null, ex);
+    PreparedStatement vendaPs = null;
+    PreparedStatement itemPs = null;
+
+    try {
+        conn.setAutoCommit(false); // Desliga o autocommit para permitir uma transação
+
+        // Insere a venda
+        vendaPs = conn.prepareStatement(vendaSql, Statement.RETURN_GENERATED_KEYS);
+        vendaPs.setDate(1, obj.datenow());
+        vendaPs.setString(2, obj.getObservacoes());
+        vendaPs.setDouble(3, obj.getTotal());
+        vendaPs.setInt(4, obj.getCliente());
+        vendaPs.executeUpdate();
+
+        ResultSet vendaKeys = vendaPs.getGeneratedKeys();
+        int vendaId = -1;
+        if (vendaKeys.next()) {
+            vendaId = vendaKeys.getInt(1); // Obtém o ID da venda inserida
         }
-        return false;
+        // Insere os itens de venda
+        itemPs = conn.prepareStatement(itemSql);
+        for (ItemVenda item : obj.getItens()) {
+            itemPs.setInt(1, item.getQuantidade());
+            itemPs.setDouble(2, item.getValorTotal());
+            itemPs.setDouble(3, item.getValorUnitario());
+            itemPs.setInt(4, item.getProduto());
+            itemPs.setInt(5, vendaId); // Usa o ID da venda inserida
+            itemPs.addBatch();
+        }
+        itemPs.executeBatch();
+
+        conn.commit(); // Confirma a transação
+
+        return true;
+    } catch (SQLException ex) {
+        try {
+            conn.rollback(); // Em caso de falha, faz rollback da transação
+        } catch (SQLException e) {
+            // Lidar com o erro de rollback, se necessário
+        }
+        Logger.getLogger(VendaDAO.class.getName()).log(Level.SEVERE, null, ex);
+    } finally {
+        try {
+            if (vendaPs != null) vendaPs.close();
+            if (itemPs != null) itemPs.close();
+            conn.setAutoCommit(true); // Restaura o autocommit para o estado padrão
+        } catch (SQLException ex) {
+            // Lidar com erros de fechamento de recursos, se necessário
+        }
     }
+    return false;
+}
     
     public void gerarRelatorio(){
               try {

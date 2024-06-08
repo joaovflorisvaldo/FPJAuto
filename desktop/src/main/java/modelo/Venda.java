@@ -5,6 +5,8 @@
 package modelo;
 
 import java.sql.Date;
+import java.time.LocalDate;
+import java.util.List;
 
 /**
  *
@@ -14,9 +16,11 @@ public class Venda {
     
     private Integer id;
     private String observacoes;
-    private Date data ;
     private Double total;
     private Integer cliente;
+    private List<ItemVenda> itens;
+    
+    public Date datenow() {return Date.valueOf(LocalDate.now());}
     
     public Venda(){}
 
@@ -28,10 +32,6 @@ public class Venda {
 
     public void setObservacoes(String observacoes) {this.observacoes = observacoes;}
 
-    public Date getData() {return data;}
-
-    public void setData(Date data) {this.data = data;}
-
     public Double getTotal() {return total;}
 
     public void setTotal(Double total) {this.total = total;}
@@ -40,5 +40,8 @@ public class Venda {
 
     public void setCliente(Integer cliente) {this.cliente = cliente;}
     
+    public List<ItemVenda> getItens() {return itens;}
+
+    public void setItens(List<ItemVenda> itens) {this.itens = itens;}
     
 }

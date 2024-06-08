@@ -11,7 +11,7 @@ package dto;
 public class ProdutoDto {
     
     private Integer id;
-    private String descricao;
+    private String nome;
     private Double valor ;
     private String categoria;
 
@@ -19,9 +19,9 @@ public class ProdutoDto {
 
     public void setId(Integer id) {this.id = id;}
 
-    public String getDescricao() {return descricao;}
+    public String getNome() {return nome;}
 
-    public void setDescricao(String descricao) {this.descricao = descricao;}
+    public void setNome(String nome) {this.nome = nome;}
 
     public Double getValor() {return valor;}
 

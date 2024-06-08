@@ -11,31 +11,61 @@ package modelo;
 public class ItemVenda {
     
     private Integer id;
-    private String observacoes;
-    private String data ;
-    private Double total;
-    private String cliente;
+    private int quantidade;
+    private double valorUnitario;
+    private double valorTotal;
+    private Integer cliente;
+    private Integer produto;
 
-    public Integer getId() {return id;}
+    public Integer getId() {
+        return id;
+    }
 
-    public void setId(Integer id) {this.id = id;}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-    public String getObservacoes() {return observacoes;}
+    public int getQuantidade() {
+        return quantidade;
+    }
 
-    public void setObservacoes(String observacoes) {this.observacoes = observacoes;}
+    public void setQuantidade(int quantidade) {
+        this.quantidade = quantidade;
+    }
 
-    public String getData() {return data;}
+    public double getValorUnitario() {
+        return valorUnitario;
+    }
 
-    public void setData(String data) {this.data = data;}
+    public void setValorUnitario(double valorUnitario) {
+        this.valorUnitario = valorUnitario;
+    }
 
-    public Double getTotal() {return total;}
+    public double getValorTotal() {
+        return valorTotal;
+    }
 
-    public void setTotal(Double total) {this.total = total;}
+    public void setValorTotal(double valorTotal) {
+        this.valorTotal = valorTotal;
+    }
 
-    public String getCliente() {return cliente;}
+    public Integer getCliente() {
+        return cliente;
+    }
 
-    public void setCliente(String cliente) {this.cliente = cliente;}
-    
+    public void setCliente(Integer cliente) {
+        this.cliente = cliente;
+    }
+
+    public Integer getProduto() {
+        return produto;
+    }
+
+    public void setProduto(Integer produto) {
+        this.produto = produto;
+    }
+
+
     
     
 }
