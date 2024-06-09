@@ -1,9 +1,12 @@
 C:\Users\joaov\Documents\projetos\FPJAuto\desktop\src\main\java\com\mycompany\desktop\Desktop.java
 C:\Users\joaov\Documents\projetos\FPJAuto\desktop\src\main\java\Service\ServiceCliente.java
+C:\Users\joaov\Documents\projetos\FPJAuto\desktop\src\main\java\dto\ItemVendaDto.java
 C:\Users\joaov\Documents\projetos\FPJAuto\desktop\src\main\java\dao\GenericDAO.java
+C:\Users\joaov\Documents\projetos\FPJAuto\desktop\src\main\java\dto\VendaDto.java
 C:\Users\joaov\Documents\projetos\FPJAuto\desktop\src\main\java\modelo\ItemVenda.java
 C:\Users\joaov\Documents\projetos\FPJAuto\desktop\src\main\java\dto\ProdutoDto.java
 C:\Users\joaov\Documents\projetos\FPJAuto\desktop\src\main\java\modelo\Cliente.java
+C:\Users\joaov\Documents\projetos\FPJAuto\desktop\src\main\java\Service\ServiceVenda.java
 C:\Users\joaov\Documents\projetos\FPJAuto\desktop\src\main\java\com\mycompany\desktop\Util.java
 C:\Users\joaov\Documents\projetos\FPJAuto\desktop\src\main\java\conexaoBD\ConexaoPostgres.java
 C:\Users\joaov\Documents\projetos\FPJAuto\desktop\src\main\java\dto\ClienteDto.java

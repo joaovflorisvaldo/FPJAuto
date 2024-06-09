@@ -6,15 +6,19 @@ package view;
 
 import Service.ServiceCliente;
 import Service.ServiceProduto;
+import Service.ServiceVenda;
+
 import dao.VendaDAO;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import dto.ClienteDto;
+import dto.ItemVendaDto;
 import dto.ProdutoDto;
+import dto.VendaDto;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import modelo.ItemVenda;
-import modelo.Produto;
 import modelo.Venda;
 
 /**
@@ -426,13 +430,51 @@ public class Vendas extends javax.swing.JFrame {
         venda.setObservacoes(taObservacoes.getText());
         venda.setTotal(Double.parseDouble(tfValorTotalPedido.getText()));
         venda.setCliente(idCliente);
-        venda.setItens(obterItensVenda()); // Obtenha os itens da venda
+        venda.setItens(obterItensVenda());
 
         if (vendaDao.salvar(venda)) {
             JOptionPane.showMessageDialog(this, "Venda salva com sucesso!", "Sucesso", JOptionPane.PLAIN_MESSAGE);
         } else {
             JOptionPane.showMessageDialog(this, "Erro ao salvar Venda, solicite suporte!", "Erro", JOptionPane.PLAIN_MESSAGE);
         }
+        
+        // Criação do objeto de venda para enviar para o ServiceVenda
+        VendaDto vendaDto = new VendaDto();
+        vendaDto.setObservacoes(taObservacoes.getText());
+        vendaDto.setTotal(Double.parseDouble(tfValorTotalPedido.getText()));
+        vendaDto.setData(java.sql.Date.valueOf(LocalDate.now()));
+        
+        vendaDto.setCliente(idCliente);
+        
+        // Chama o método do ServiceVenda para salvar a venda na API
+        ServiceVenda serviceVenda = new ServiceVenda();
+
+        ServiceVenda.SaveResult vendaSalvaComSucesso = serviceVenda.salvarVenda(vendaDto);
+
+        if (vendaSalvaComSucesso.isSuccess()) {
+            JOptionPane.showMessageDialog(this, "Venda salva com sucesso!", "Sucesso", JOptionPane.PLAIN_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "Erro ao salvar Venda: " + vendaSalvaComSucesso.getErrorMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        // Criação do objeto de venda para enviar para o ServiceVenda
+        ItemVendaDto itemVendaDto = new ItemVendaDto();
+        itemVendaDto.setQuantidade(taObservacoes.getText());
+        itemVendaDto.setValorUnitario(idCliente);
+        itemVendaDto.setValorTotal(java.sql.Date.valueOf(LocalDate.now()));
+        itemVendaDto.setVenda(java.sql.Date.valueOf(LocalDate.now()));
+        itemVendaDto.setProduto(java.sql.Date.valueOf(LocalDate.now()));
+
+
+        // Chama o método do ServiceVenda para salvar a venda na API
+
+        ServiceVenda.SaveResult vendaSalvaComSucesso = serviceVenda.salvarItemVenda(itemVendaDto);
+
+        if (vendaSalvaComSucesso.isSuccess()) {
+            JOptionPane.showMessageDialog(this, "Venda salva com sucesso!", "Sucesso", JOptionPane.PLAIN_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "Erro ao salvar Venda: " + vendaSalvaComSucesso.getErrorMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }         
     }//GEN-LAST:event_btSalvarPedidoActionPerformed
 
     private void tfQuantidadeItemKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfQuantidadeItemKeyTyped
