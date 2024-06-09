@@ -127,10 +127,7 @@
                       <Group type="102" alignment="1" attributes="0">
                           <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="tfValorTotalItem" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="btAdicionarItens" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
+                          <Component id="btAdicionarItens" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
                           <Group type="103" groupAlignment="3" attributes="0">
@@ -141,6 +138,7 @@
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="tfValorItem" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="tfQuantidadeItem" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="tfValorTotalItem" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
