@@ -6,15 +6,18 @@ package view;
 
 import Service.ServiceCliente;
 import Service.ServiceProduto;
+import Service.ServiceVenda;
 import dao.VendaDAO;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import dto.ClienteDto;
 import dto.ProdutoDto;
+import dto.ItemVendaDto;
 import java.util.ArrayList;
 import java.util.List;
 import modelo.ItemVenda;
-import modelo.Produto;
+import dto.VendaDto;
+import java.time.LocalDate;
 import modelo.Venda;
 
 /**
@@ -23,9 +26,9 @@ import modelo.Venda;
  */
 public class Vendas extends javax.swing.JFrame {
           
-          private VendaDAO vendaDao = new VendaDAO();
-          private DefaultTableModel  modelo = new DefaultTableModel();
-          private int linhaSelecionada = -1;
+    private VendaDAO vendaDao = new VendaDAO();
+    private DefaultTableModel  modelo = new DefaultTableModel();
+    private int linhaSelecionada = -1;
 
     /**
      * Creates new form NewJFramed
@@ -34,6 +37,48 @@ public class Vendas extends javax.swing.JFrame {
         initComponents();
         carregaTabela();
         carregarNomesDosClientes();
+        carregarProdutos();
+    }
+    
+    public void salvarApiVenda(Integer idCliente) {
+        VendaDto vendaDto = new VendaDto();
+        vendaDto.setObservacoes(taObservacoes.getText());
+        vendaDto.setTotal(Double.parseDouble(tfValorTotalPedido.getText()));
+        vendaDto.setData(java.sql.Date.valueOf(LocalDate.now()));
+        vendaDto.setCliente(idCliente);
+
+        ServiceVenda serviceVenda = new ServiceVenda();
+
+        ServiceVenda.SaveResult vendaSalvaComSucesso = serviceVenda.salvarVenda(vendaDto);
+
+        if (vendaSalvaComSucesso.isSuccess()) {
+            ItemVendaDto itemVendaDto = new ItemVendaDto();
+            vendaDto.setId(vendaSalvaComSucesso.getVendaId()); // Atualizar o VendaDto com o ID gerado
+            itemVendaDto.setItens(obterItensVenda());  
+            itemVendaDto.setVenda(vendaDto);
+            
+            ServiceVenda.SaveResult ItemVendaComSucesso = serviceVenda.salvarItemVenda(itemVendaDto);
+            if (ItemVendaComSucesso.isSuccess()) {
+                JOptionPane.showMessageDialog(this, "Item venda salvo com sucesso!", "Sucesso", JOptionPane.PLAIN_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Erro ao salvar Item venda: " + ItemVendaComSucesso.getErrorMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            }  
+            JOptionPane.showMessageDialog(this, "Venda salva com sucesso!", "Sucesso", JOptionPane.PLAIN_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "Erro ao salvar Venda: " + vendaSalvaComSucesso.getErrorMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    public void salvarApiItemVenda() {
+        
+        ItemVendaDto itemVendaDto = new ItemVendaDto();
+        itemVendaDto.setItens (obterItensVenda());
+
+        // Chama o método do ServiceVenda para salvar a venda na API
+        ServiceVenda serviceVenda = new ServiceVenda();
+        
+
+       
         carregarProdutos();
     }
     
@@ -82,7 +127,6 @@ public class Vendas extends javax.swing.JFrame {
                 for (ProdutoDto produto : produtos) {
                     if (produto.getNome().equals(tbPedido.getValueAt(i, 0))) {
                         idProduto = produto.getId();
-                        System.out.println("abc " + idProduto);
                     }
                 }
             } catch (Exception ex) {
@@ -94,8 +138,8 @@ public class Vendas extends javax.swing.JFrame {
             Double valorTotal = Double.parseDouble(tbPedido.getValueAt(i, 3).toString());
             
             item.setQuantidade(quantidade);
-            item.setValorUnitario(valorTotal);
-            item.setValorTotal(valorUnitario);
+            item.setValorUnitario(valorUnitario);
+            item.setValorTotal(valorTotal);
             item.setProduto(idProduto);
             
             itens.add(item);
@@ -200,6 +244,12 @@ public class Vendas extends javax.swing.JFrame {
         jLabel5.setText("Valor Total Item");
 
         jLabel6.setText("Valor Total");
+
+        tfValorTotalPedido.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tfValorTotalPedidoActionPerformed(evt);
+            }
+        });
 
         jLabel7.setText("Observações");
 
@@ -430,14 +480,16 @@ public class Vendas extends javax.swing.JFrame {
         venda.setObservacoes(taObservacoes.getText());
         venda.setTotal(Double.parseDouble(tfValorTotalPedido.getText()));
         venda.setCliente(idCliente);
-        venda.setItens(obterItensVenda()); // Obtenha os itens da venda
-
+        venda.setItens(obterItensVenda());
+        
         if( taObservacoes.getText().isEmpty()){
             JOptionPane.showMessageDialog(this, "Informe uma observação!");
             return;
         }
         
         if (vendaDao.salvar(venda)) {
+            salvarApiVenda(idCliente);
+            salvarApiItemVenda();
             JOptionPane.showMessageDialog(this, "Venda salva com sucesso!", "Sucesso", JOptionPane.PLAIN_MESSAGE);
             DefaultTableModel model = (DefaultTableModel) tbPedido.getModel();
             model.setRowCount(0);
@@ -449,8 +501,6 @@ public class Vendas extends javax.swing.JFrame {
         } else {
             JOptionPane.showMessageDialog(this, "Erro ao salvar Venda, solicite suporte!", "Erro", JOptionPane.PLAIN_MESSAGE);
         }
-
-        carregarProdutos();
     }//GEN-LAST:event_btSalvarPedidoActionPerformed
 
     private void tfQuantidadeItemKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfQuantidadeItemKeyTyped
@@ -465,6 +515,10 @@ public class Vendas extends javax.swing.JFrame {
 
         tfValorTotalItem.setText(String.valueOf(valorTotalItem));
     }//GEN-LAST:event_tfQuantidadeItemKeyReleased
+
+    private void tfValorTotalPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfValorTotalPedidoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tfValorTotalPedidoActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btAdicionarItens;
