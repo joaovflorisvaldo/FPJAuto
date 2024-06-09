@@ -70,23 +70,24 @@ public class Vendas extends javax.swing.JFrame {
     
     private List<ItemVenda> obterItensVenda() {
         Integer idProduto = 0;
-
-        try {
-            String produtoSelecionado = (String) cbProduto.getSelectedItem();
-            List<ProdutoDto> produtos = ServiceProduto.obterProdutosDaAPI();
-
-            for (ProdutoDto produto : produtos) {
-                if (produto.getNome().equals(produtoSelecionado)) {
-                    idProduto = produto.getId();
-                }
-            }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Erro ao obter Cliente: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-        }        
+       
         List<ItemVenda> itens = new ArrayList<>();
 
         for (int i = 0; i < tbPedido.getRowCount(); i++) {
             ItemVenda item = new ItemVenda();
+            
+            try {
+                List<ProdutoDto> produtos = ServiceProduto.obterProdutosDaAPI();
+
+                for (ProdutoDto produto : produtos) {
+                    if (produto.getNome().equals(tbPedido.getValueAt(i, 0))) {
+                        idProduto = produto.getId();
+                        System.out.println("abc " + idProduto);
+                    }
+                }
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Erro ao obter Cliente: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            } 
             
             Integer quantidade = Integer.parseInt(tbPedido.getValueAt(i, 1).toString());
             Double valorUnitario = Double.parseDouble(tbPedido.getValueAt(i, 2).toString());
@@ -96,7 +97,7 @@ public class Vendas extends javax.swing.JFrame {
             item.setValorUnitario(valorTotal);
             item.setValorTotal(valorUnitario);
             item.setProduto(idProduto);
-
+            
             itens.add(item);
         }
 
@@ -298,9 +299,7 @@ public class Vendas extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(tfValorTotalItem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btAdicionarItens)))
+                        .addComponent(btAdicionarItens))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
@@ -308,7 +307,8 @@ public class Vendas extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(tfValorItem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(tfQuantidadeItem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(tfQuantidadeItem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(tfValorTotalItem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -358,6 +358,7 @@ public class Vendas extends javax.swing.JFrame {
             for (ProdutoDto produto : produtos) {
                 if (produto.getNome().equals(produtoSelecionado)) {
                     tfValorItem.setText(String.valueOf(produto.getValor()));
+                    tfValorItem.disable();
                     break;
                 }
             }          
@@ -403,11 +404,14 @@ public class Vendas extends javax.swing.JFrame {
         }
 
         tfValorTotalPedido.setText(String.valueOf(valorTotalPedido));
+        
+        cbCliente.disable();
+        cbProduto.setSelectedIndex(0);
     }//GEN-LAST:event_btAdicionarItensActionPerformed
 
     private void btSalvarPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSalvarPedidoActionPerformed
         Integer idCliente = 0;
-
+        
         try {
             String clienteSelecionado = (String) cbCliente.getSelectedItem();
             List<ClienteDto> clientes = ServiceCliente.obterClientesDaAPI();
@@ -428,11 +432,25 @@ public class Vendas extends javax.swing.JFrame {
         venda.setCliente(idCliente);
         venda.setItens(obterItensVenda()); // Obtenha os itens da venda
 
+        if( taObservacoes.getText().isEmpty()){
+            JOptionPane.showMessageDialog(this, "Informe uma observação!");
+            return;
+        }
+        
         if (vendaDao.salvar(venda)) {
             JOptionPane.showMessageDialog(this, "Venda salva com sucesso!", "Sucesso", JOptionPane.PLAIN_MESSAGE);
+            DefaultTableModel model = (DefaultTableModel) tbPedido.getModel();
+            model.setRowCount(0);
+            taObservacoes.setText("");
+            tfValorTotalPedido.setText("");
+            cbCliente.enable();
+            carregarNomesDosClientes();
+            return;
         } else {
             JOptionPane.showMessageDialog(this, "Erro ao salvar Venda, solicite suporte!", "Erro", JOptionPane.PLAIN_MESSAGE);
         }
+
+        carregarProdutos();
     }//GEN-LAST:event_btSalvarPedidoActionPerformed
 
     private void tfQuantidadeItemKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfQuantidadeItemKeyTyped
