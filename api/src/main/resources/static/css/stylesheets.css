@@ -1,0 +1,99 @@
+:root {
+    --main-bg-color: #f0f0f5;
+    --primary-color: #5c6bc0;
+    --secondary-color: #9fa8da;
+    --accent-color: #3949ab;
+    --text-color: #333;
+    --border-color: #dcdde1;
+    --button-bg-color: #3949ab;
+    --button-text-color: #fff;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: var(--main-bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+h1 {
+    color: var(--accent-color);
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.form-container, .retornar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+label {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+input[type="date"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.btnFiltrar, .btVoltar {
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btnFiltrar:hover, .btVoltar:hover {
+    background-color: var(--primary-color);
+}
+
+.table-container {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+.table-container th, .table-container td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.table-container th {
+    background-color: var(--secondary-color);
+    color: #fff;
+}
+
+.clear15 {
+    height: 15px;
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 10px;
+    }
+
+    .table-container th, .table-container td {
+        padding: 5px;
+    }
+}
