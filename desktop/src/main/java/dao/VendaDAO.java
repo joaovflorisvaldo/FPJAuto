@@ -101,14 +101,30 @@ public boolean salvar(Venda obj) {
     public void gerarRelatorio(){
               try {
                         //responsavel em carregar o relatorio
-                        String relatorioPath =  "relatorios/relVendas.jasper";
+                        String relatorioPath =  "src/relatorios/relatorioDetalhado.jasper";
                         JasperPrint printer = JasperFillManager.fillReport(relatorioPath, null, conn);
                         
                         //exibicao
                         JasperViewer view = new JasperViewer(printer, false);
                         
                         view.setVisible(true);
+
+              } catch (JRException ex) {
+                        Logger.getLogger(VendaDAO.class.getName()).log(Level.SEVERE, null, ex);
+              }
+    }
+    
+    public void gerarRelatorioGeral(){
+              try {
+                        //responsavel em carregar o relatorio
+                        String relatorioPath =  "src/relatorios/relatorioGeral.jasper";
+                        JasperPrint printer = JasperFillManager.fillReport(relatorioPath, null, conn);
                         
+                        //exibicao
+                        JasperViewer view = new JasperViewer(printer, false);
+                        
+                        view.setVisible(true);
+
               } catch (JRException ex) {
                         Logger.getLogger(VendaDAO.class.getName()).log(Level.SEVERE, null, ex);
               }
