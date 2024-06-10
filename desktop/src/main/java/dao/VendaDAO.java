@@ -42,7 +42,7 @@ public class VendaDAO extends GenericDAO<Venda>{
 
 @Override
 public boolean salvar(Venda obj) {
-    String vendaSql = "INSERT INTO public.\"venda\"(\"data\", \"descricao\", \"total\", \"cliente_id\") VALUES (?, ?, ?, ?)";
+    String vendaSql = "INSERT INTO public.\"venda\"(\"data\", \"observacoes\", \"total\", \"cliente_id\") VALUES (?, ?, ?, ?)";
     String itemSql = "INSERT INTO public.\"item_venda\"(\"quantidade\", \"valor_total\", \"valor_unitario\", \"produto_id\", \"venda_id\") VALUES (?, ?, ?, ?, ?)";
 
     PreparedStatement vendaPs = null;
@@ -101,7 +101,7 @@ public boolean salvar(Venda obj) {
     public void gerarRelatorio(){
               try {
                         //responsavel em carregar o relatorio
-                        String relatorioPath =  "Relatorios/relVendas.jasper";
+                        String relatorioPath =  "relatorios/relVendas.jasper";
                         JasperPrint printer = JasperFillManager.fillReport(relatorioPath, null, conn);
                         
                         //exibicao
