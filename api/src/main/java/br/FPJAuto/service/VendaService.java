@@ -5,7 +5,7 @@ import br.FPJAuto.repository.VendaRepository;
 import org.springframework.stereotype.Service;
 
 
-
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,5 +33,10 @@ public class VendaService {
     public void deleteById(int id){
         this.vendaRepository.deleteById(id);
     }
+
+    public List<Venda> vendaFilter(Date data) {
+        return vendaRepository.findByData(data);
+    }
+
 
 }

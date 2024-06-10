@@ -1,11 +1,11 @@
 :root {
     --main-bg-color: #f0f0f5;
-    --primary-color: #5c6bc0;
-    --secondary-color: #9fa8da;
-    --accent-color: #3949ab;
+    --primary-color: #132226;
+    --secondary-color: #243e4a;
+    --accent-color: #0f1c1d;
     --text-color: #333;
     --border-color: #dcdde1;
-    --button-bg-color: #3949ab;
+    --button-bg-color: #132226;
     --button-text-color: #fff;
 }
 
@@ -36,7 +36,8 @@ h1 {
 .form-container, .retornar {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-end;
+    margin: 25px;
 }
 
 label {
@@ -64,7 +65,7 @@ input[type="date"] {
 }
 
 .btnFiltrar:hover, .btVoltar:hover {
-    background-color: var(--primary-color);
+    background-color: var(--secondary-color);
 }
 
 .table-container {
