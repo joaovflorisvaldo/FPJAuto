@@ -1,32 +1,16 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package modelo;
+package dto;
 
 import java.util.List;
+import modelo.ItemVenda;
 
-/**
- *
- * @author Felipe
- */
-public class ItemVenda {
+public class ItemVendaDto {
 
-    private Integer id;
     private int quantidade;
     private double valorUnitario;
     private double valorTotal;
-    private Integer cliente;
-    private Integer produto;
+    private VendaDto venda;
+    private ProdutoDto produto;
     private List<ItemVenda> itens;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public int getQuantidade() {
         return quantidade;
@@ -52,19 +36,19 @@ public class ItemVenda {
         this.valorTotal = valorTotal;
     }
 
-    public Integer getCliente() {
-        return cliente;
+    public VendaDto getVenda() {
+        return venda;
     }
 
-    public void setCliente(Integer cliente) {
-        this.cliente = cliente;
+    public void setVenda(VendaDto venda) {
+        this.venda = venda;
     }
 
-    public Integer getProduto() {
+    public ProdutoDto getProduto() {
         return produto;
     }
 
-    public void setProduto(Integer produto) {
+    public void setProduto(ProdutoDto produto) {
         this.produto = produto;
     }
 
